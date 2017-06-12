@@ -8,9 +8,11 @@ def generate():
     parser.add_argument('--vectors_file', default='vectors.txt', type=str)
     args = parser.parse_args()
 
-    with open(args.vocab_file, 'r') as f:
-        words = [x.rstrip().split(' ')[0] for x in f.readlines()]
+    # with open(args.vocab_file, 'r') as f:
+    #     words = [x.rstrip().split(' ')[0] for x in f.readlines()]
     with open(args.vectors_file, 'r') as f:
+        words = [x.rstrip().split(' ')[0] for x in f.readlines() if x.rstrip().split(' ')[0] != '<unk>']
+        f.seek(0)
         vectors = {}
         for line in f:
             vals = line.rstrip().split(' ')
@@ -64,12 +66,12 @@ def distance(W, vocab, ivocab, input_term):
 
         print("\n                               Word       Cosine distance\n")
         print("---------------------------------------------------------\n")
-        for x in a:
-            print("%35s\t\t%f\n" % (ivocab[x], dist[x]))
+        for idx, x in enumerate(a):
+            print("%d. %35s\t\t%f\n" % (idx+1, ivocab[x], dist[x]))
 
 
 if __name__ == "__main__":
-    N = 100;          # number of closest words that will be shown
+    N = 10;          # number of closest words that will be shown
     W, vocab, ivocab = generate()
     while True:
         input_term = raw_input("\nEnter three words (EXIT to break): ")
